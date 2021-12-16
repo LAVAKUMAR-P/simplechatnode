@@ -3,7 +3,10 @@ import cors from "cors";
 import {Server} from 'socket.io';
 import * as http from 'http';
 import router from "./Routes/Post.js";
+import dotenv from "dotenv";
+dotenv.config();
 const PORT=process.env.PORT || 3001;
+const ORGIN=process.env.orgin;
 const app=express();
 app.use(cors());
 
@@ -12,7 +15,7 @@ const server=http.createServer(app);
 
 const io=new Server(server,{
     cors:{
-        origin:"http://localhost:3000",
+        origin:ORGIN,
         methord:["GET","POST"],
     }
 });
