@@ -1,10 +1,11 @@
-const express=require('express');
-const app=express();
-const cors=require("cors");
-app.use(cors());
-const {Server}=require('socket.io');
+import express  from "express";
+import cors from "cors";
+import {Server} from 'socket.io';
+import * as http from 'http';
+import router from "./Routes/Post.js";
 const PORT=process.env.PORT || 3001;
-const http = require("http");
+const app=express();
+app.use(cors());
 
 
 const server=http.createServer(app);
@@ -16,9 +17,14 @@ const io=new Server(server,{
     }
 });
 
+app.use(express.json());
+app.use("/",router)
+
+
+
 io.on("connection", (socket) => {
   
-    console.log(`User Connected: ${socket.id}`);
+    // console.log(`User Connected: ${socket.id}`);
   
     socket.on("join_room", (data) => {
       socket.join(data);
@@ -26,11 +32,12 @@ io.on("connection", (socket) => {
     });
   
     socket.on("send_message", (data) => {
+      
       socket.to(data.room).emit("receive_message", data);
     });
   
     socket.on("disconnect", () => {
-      console.log("User Disconnected", socket.id);
+      // console.log("User Disconnected", socket.id);
     });
   });
   
